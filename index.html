@@ -26,12 +26,14 @@ Stegano Audio &amp; Video</h1>
 </div>
 
 <section class="pn" id="p1">
-<label for="carrier">File (audio/video) <small>maks. 10 MB</small></label>
+<label for="carrier">File (audio/video) <small>audio maks. 20 MB · video maks. 50 MB</small></label>
 <input type="file" id="carrier" accept="audio/*,video/*">
+<button type="button" class="clr" data-for="carrier" hidden></button>
 <label for="text">Pesan rahasia</label>
 <textarea id="text" placeholder="Ketik pesan di sini..."></textarea>
-<label for="sfile">…atau file rahasia <small>maks. 10 MB, diutamakan jika dipilih</small></label>
+<label for="sfile">…atau file rahasia <small>maks. 50 MB, diutamakan jika dipilih</small></label>
 <input type="file" id="sfile">
+<button type="button" class="clr" data-for="sfile" hidden></button>
 <label for="pw1">Kata sandi</label>
 <input type="password" id="pw1" autocomplete="new-password" placeholder="Minimal 4 karakter">
 <button class="go" id="go1">Sembunyikan &amp; enkripsi</button>
@@ -40,8 +42,9 @@ Stegano Audio &amp; Video</h1>
 </section>
 
 <section class="pn" id="p2" hidden>
-<label for="stego">File stego (audio/video) <small>maks. 10 MB</small></label>
+<label for="stego">File stego (audio/video) <small>audio maks. 20 MB · video maks. 50 MB</small></label>
 <input type="file" id="stego" accept="audio/*,video/*">
+<button type="button" class="clr" data-for="stego" hidden></button>
 <label for="pw2">Kata sandi</label>
 <input type="password" id="pw2" autocomplete="off">
 <button class="go" id="go2">Ekstrak &amp; dekripsi</button>

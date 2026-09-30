@@ -42,6 +42,9 @@ textarea{min-height:90px;resize:vertical}
 :focus-visible{outline:none}
 input:focus,textarea:focus{outline:none;border-color:var(--gold-dim)}
 
+.clr{display:inline-block;margin-top:8px;padding:6px 12px;border:1px solid var(--line);border-radius:2px;background:none;color:var(--red);font:11.5px var(--mono);letter-spacing:.02em;cursor:pointer;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;transition:border-color .15s ease}
+.clr:hover{border-color:var(--red)}
+
 .go{width:100%;margin-top:24px;padding:13px;border:0;border-radius:2px;background:var(--gold);color:var(--ink);font:700 13.5px var(--mono);letter-spacing:.02em;cursor:pointer;transition:background .15s ease}
 .go:hover{background:#DCB23A}
 .go:disabled{opacity:.6;cursor:wait}
@@ -64,7 +67,6 @@ footer .members .nim{color:var(--paper);opacity:.75}
 
 [hidden]{display:none!important}
 
-/* ---------- Loading page ---------- */
 #loader{position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--ink);transition:opacity .6s ease}
 #loader h2{margin:0;font-family:var(--display);font-weight:600;font-size:clamp(36px,8vw,54px);color:var(--paper);letter-spacing:.5px}
 #loader small{color:var(--gold);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase}

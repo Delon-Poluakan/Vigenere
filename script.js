@@ -1,4 +1,6 @@
-const $=id=>document.getElementById(id),MAX=10*1048576,MAGIC=[83,84,71,49],FOOT=[83,84,71,70],
+const $=id=>document.getElementById(id),
+AMAX=20*1048576,VMAX=50*1048576,SMAX=50*1048576,OMAX=100*1048576,
+MAGIC=[83,84,71,49],FOOT=[83,84,71,70],
 enc=new TextEncoder(),dec=new TextDecoder(),eq=(a,m)=>m.every((v,i)=>a[i]===v);
 
 async function key(pw,salt){
@@ -70,10 +72,16 @@ function dl(box,data,name,type){
   const u=URL.createObjectURL(new Blob([data],{type}));urls.push(u);
   const a=document.createElement('a');a.href=u;a.download=name;a.textContent='Unduh '+name;box.append(a);return u;
 }
-function check(f,label,media){
+const isVideo=f=>/^video\//.test(f.type);
+function checkMedia(f,label){
   if(!f)throw Error('Pilih '+label+' terlebih dahulu.');
-  if(f.size>MAX)throw Error(label+' berukuran '+mb(f.size)+', melebihi batas 10 MB.');
-  if(media&&!/^(audio|video)\//.test(f.type))throw Error('File harus berformat audio atau video.');
+  if(!/^(audio|video)\//.test(f.type))throw Error('File harus berformat audio atau video.');
+  const max=isVideo(f)?VMAX:AMAX;
+  if(f.size>max)throw Error(label+' ('+mb(f.size)+') melebihi batas '+mb(max)+' untuk '+(isVideo(f)?'video':'audio')+'.');
+}
+function checkSize(f,label,max){
+  if(!f)throw Error('Pilih '+label+' terlebih dahulu.');
+  if(f.size>max)throw Error(label+' ('+mb(f.size)+') melebihi batas '+mb(max)+'.');
 }
 async function run(btn,sid,fn){
   btn.disabled=true;st(sid,'Memproses…');
@@ -83,14 +91,14 @@ async function run(btn,sid,fn){
 $('go1').onclick=e=>run(e.target,'s1',async()=>{
   const c=$('carrier').files[0],s=$('sfile').files[0],t=$('text').value,pw=$('pw1').value,box=$('o1');
   box.replaceChildren();urls.splice(0).forEach(URL.revokeObjectURL);
-  check(c,'file pembawa',true);
-  if(s)check(s,'file rahasia');else if(!t)throw Error('Isi pesan rahasia atau pilih file rahasia.');
+  checkMedia(c,'file pembawa');
+  if(s)checkSize(s,'file rahasia',SMAX);else if(!t)throw Error('Isi pesan rahasia atau pilih file rahasia.');
   if(pw.length<4)throw Error('Kata sandi minimal 4 karakter.');
   const cb=await bytes(c),blk=await seal(s?s.name:'',s?await bytes(s):enc.encode(t),pw),w=wav(cb);
   let out,how;
   if(w&&blk.length*8<=cap(w)){out=lsbPut(cb,w,blk);how='LSB pada sampel WAV (ukuran file tetap)'}
   else{out=tail(cb,blk);how='penyisipan di akhir container'}
-  if(out.length>MAX)throw Error('Hasil ('+mb(out.length)+') melebihi 10 MB. Pakai file pembawa atau file rahasia yang lebih kecil.');
+  if(out.length>OMAX)throw Error('Hasil ('+mb(out.length)+') melebihi batas '+mb(OMAX)+'. Pakai file pembawa atau file rahasia yang lebih kecil.');
   const u=dl(box,out,'stego-'+c.name,c.type),m=document.createElement(c.type.startsWith('video')?'video':'audio');
   m.controls=true;m.src=u;box.prepend(m);
   st('s1','Berhasil. Metode: '+how+'. Ukuran hasil '+mb(out.length)+'.','ok');
@@ -99,7 +107,7 @@ $('go1').onclick=e=>run(e.target,'s1',async()=>{
 $('go2').onclick=e=>run(e.target,'s2',async()=>{
   const f=$('stego').files[0],pw=$('pw2').value,box=$('o2');
   box.replaceChildren();urls.splice(0).forEach(URL.revokeObjectURL);
-  check(f,'file stego',true);
+  checkMedia(f,'file stego');
   if(!pw)throw Error('Masukkan kata sandi.');
   const b=await bytes(f);let blk=tailGet(b);
   if(!blk){const w=wav(b);blk=w&&lsbGet(b,w)}
@@ -111,6 +119,16 @@ $('go2').onclick=e=>run(e.target,'s2',async()=>{
 
 const tabs=[[$('t1'),$('p1')],[$('t2'),$('p2')]];
 tabs.forEach(([t])=>t.onclick=()=>tabs.forEach(([x,p])=>{const on=x===t;x.setAttribute('aria-selected',on);p.hidden=!on}));
+
+function wireClear(inputId){
+  const inp=$(inputId),btn=document.querySelector('.clr[data-for="'+inputId+'"]');
+  if(!inp||!btn)return;
+  const sync=()=>{const f=inp.files[0];btn.hidden=!f;if(f)btn.textContent='✕ Hapus: '+f.name};
+  inp.addEventListener('change',sync);
+  btn.addEventListener('click',()=>{inp.value='';sync();inp.focus()});
+  sync();
+}
+['carrier','sfile','stego'].forEach(wireClear);
 
 window.addEventListener('load',()=>{
   const l=$('loader');if(!l)return;
