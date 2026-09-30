@@ -1,12 +1,10 @@
 const $=id=>document.getElementById(id),MAX=10*1048576,MAGIC=[83,84,71,49],FOOT=[83,84,71,70],
 enc=new TextEncoder(),dec=new TextDecoder(),eq=(a,m)=>m.every((v,i)=>a[i]===v);
 
-/* ---------- Kriptografi: PBKDF2 + AES-256-GCM ---------- */
 async function key(pw,salt){
   const k=await crypto.subtle.importKey('raw',enc.encode(pw),'PBKDF2',false,['deriveKey']);
   return crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:150000,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);
 }
-// blok = "STG1"(4) + panjang(4) + salt(16) + iv(12) + ciphertext
 async function seal(name,data,pw){
   const nb=enc.encode(name),plain=new Uint8Array(2+nb.length+data.length);
   new DataView(plain.buffer).setUint16(0,nb.length);plain.set(nb,2);plain.set(data,2+nb.length);
@@ -24,7 +22,6 @@ async function open(blk,pw){
   return{name:dec.decode(p.subarray(2,2+n)),data:p.subarray(2+n)};
 }
 
-/* ---------- WAV: LSB pada byte terendah tiap sampel ---------- */
 function wav(b){
   const t=o=>String.fromCharCode(b[o],b[o+1],b[o+2],b[o+3]);
   if(b.length<44||t(0)!=='RIFF'||t(8)!=='WAVE')return null;
@@ -53,7 +50,6 @@ function lsbGet(b,w){
   const blk=new Uint8Array(8+len);blk.set(h);blk.set(rd(len),8);return blk;
 }
 
-/* ---------- Umum (MP4, WebM, MP3, dll.): sisip di akhir file ---------- */
 function tail(b,blk){
   const n=b.length,o=new Uint8Array(n+blk.length+8);
   o.set(b);o.set(blk,n);o.set(FOOT,n+blk.length+4);
@@ -66,7 +62,6 @@ function tailGet(b){
   const blk=b.slice(n-8-len,n-8);return eq(blk,MAGIC)?blk:null;
 }
 
-/* ---------- UI ---------- */
 const mb=n=>(n/1048576).toFixed(2)+' MB',
 st=(id,m,c='')=>{const e=$(id);e.hidden=!m;e.textContent=m;e.className='st '+c},
 bytes=async f=>new Uint8Array(await f.arrayBuffer());
@@ -117,7 +112,6 @@ $('go2').onclick=e=>run(e.target,'s2',async()=>{
 const tabs=[[$('t1'),$('p1')],[$('t2'),$('p2')]];
 tabs.forEach(([t])=>t.onclick=()=>tabs.forEach(([x,p])=>{const on=x===t;x.setAttribute('aria-selected',on);p.hidden=!on}));
 
-/* ---------- Loading page: tampil dulu, lalu menghilang ---------- */
 window.addEventListener('load',()=>{
   const l=$('loader');if(!l)return;
   setTimeout(()=>{l.classList.add('hide');setTimeout(()=>l.remove(),600)},1400);
