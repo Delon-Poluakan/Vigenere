@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stegano Audio & Video</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loader">
+  <h2>Steganografi</h2>
+  <small>Kelompok 7</small>
+</div>
+
+<div class="grid-noise" aria-hidden="true"></div>
+
+<main>
+<h1>
+<svg width="44" height="28" viewBox="0 0 44 28" aria-hidden="true"><g fill="var(--gold)"><rect x="0" y="10" width="4" height="8" rx="2"/><rect x="8" y="4" width="4" height="20" rx="2"/><rect x="16" y="0" width="4" height="28" rx="2"/><rect x="24" y="6" width="4" height="16" rx="2"/><rect x="32" y="9" width="4" height="10" rx="2" opacity=".5"/><rect x="40" y="12" width="4" height="4" rx="2" opacity=".25"/></g></svg>
+Stegano Audio &amp; Video</h1>
+
+<div class="tabs" role="tablist">
+<button role="tab" id="t1" aria-selected="true">Enkripsi</button>
+<button role="tab" id="t2" aria-selected="false">Dekripsi</button>
+</div>
+
+<section class="pn" id="p1">
+<label for="carrier">File (audio/video) <small>maks. 10 MB</small></label>
+<input type="file" id="carrier" accept="audio/*,video/*">
+<label for="text">Pesan rahasia</label>
+<textarea id="text" placeholder="Ketik pesan di sini..."></textarea>
+<label for="sfile">…atau file rahasia <small>maks. 10 MB, diutamakan jika dipilih</small></label>
+<input type="file" id="sfile">
+<label for="pw1">Kata sandi</label>
+<input type="password" id="pw1" autocomplete="new-password" placeholder="Minimal 4 karakter">
+<button class="go" id="go1">Sembunyikan &amp; enkripsi</button>
+<div class="st" id="s1" hidden></div>
+<div class="out" id="o1"></div>
+</section>
+
+<section class="pn" id="p2" hidden>
+<label for="stego">File stego (audio/video) <small>maks. 10 MB</small></label>
+<input type="file" id="stego" accept="audio/*,video/*">
+<label for="pw2">Kata sandi</label>
+<input type="password" id="pw2" autocomplete="off">
+<button class="go" id="go2">Ekstrak &amp; dekripsi</button>
+<div class="st" id="s2" hidden></div>
+<div class="out" id="o2"></div>
+</section>
+
+<footer>
+  
+  <div class="group">
+    <strong>Kelompok 7</strong>
+    <ul class="members">
+      <li><span>Miracle Lumowa</span><span class="nim">230211060086</span></li>
+      <li><span>Delon Poluakan</span><span class="nim">240211060020</span></li>
+      <li><span>Cristalia Ambarita</span><span class="nim">240211060029</span></li>
+      <li><span>Ezra Lumentut</span><span class="nim">240211060032</span></li>
+    </ul>
+  </div>
+</footer>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
